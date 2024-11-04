@@ -1,9 +1,10 @@
 {
   "name": "kalman-filter",
   "version": "1.0.0",
+  "type": "module",
   "description": "Kalman filter (and Extended Kalman Filter) Multi-dimensional implementation in Javascript.",
-  "main": "cjs/index.js",
-  "types": "cjs/index.d.ts",
+  "main": "index.ts",
+
   "scripts": {
     "test": "tsc && xo && ava",
     "xo": "xo",
@@ -21,9 +22,8 @@
     "registry": "https://npm.pkg.github.com"
   },
   "files": [
-    "cjs/index.js",
-    "cjs/index.d.ts",
-    "cjs/lib"
+    "index.ts",
+    "lib"
   ],
   "release": {
     "branches": [
