@@ -15,7 +15,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/piercus/kalman-filter.git"
+    "url": "git+https://github.com/psantos9/kalman-filter.git"
+  },
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
   },
   "files": [
     "cjs/index.js",
@@ -83,9 +86,9 @@
   "author": "Pierre Colle <piercus@gmail.com>",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/piercus/kalman-filter/issues"
+    "url": "https://github.com/psantos9/kalman-filter/issues"
   },
-  "homepage": "https://github.com/piercus/kalman-filter#readme",
+  "homepage": "https://github.com/psantos9/kalman-filter#readme",
   "devDependencies": {
     "@semantic-release/git": "^10.0.1",
     "@types/node": "^20.12.11",
