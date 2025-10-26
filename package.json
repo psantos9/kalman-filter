@@ -22,8 +22,10 @@
     "registry": "https://npm.pkg.github.com"
   },
   "files": [
-    "index.ts",
-    "lib"
+    "cjs/index.js",
+    "cjs/index.d.ts",
+    "cjs/index.d.ts.map",
+    "cjs/lib"
   ],
   "release": {
     "branches": [
