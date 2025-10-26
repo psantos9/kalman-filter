@@ -1,1 +1,0 @@
-{"version":3,"file":"check-dimensions.d.ts","sourceRoot":"","sources":["../../../../src/lib/setup/check-dimensions.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,oBAAoB,EAAE,MAAM,4BAA4B,CAAA;AAEtE;;;;;GAKG;AACH,MAAM,CAAC,OAAO,UAAU,eAAe,CAAC,IAAI,EAAE;IAAE,WAAW,MAAC;IAAC,OAAO,EAAE,oBAAoB,CAAA;CAAE,GAAG;IAAE,WAAW,EAAE,GAAG,CAAC;IAAC,OAAO,EAAE,oBAAoB,CAAA;CAAE,CAQjJ"}
