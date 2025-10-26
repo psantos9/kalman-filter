@@ -2,16 +2,16 @@
   "compilerOptions": {
     "target": "esnext",
     "module": "commonjs",
+    "strict": false,
     "declaration": true,
     "declarationMap": true,
-    "outDir": "./cjs",
+    "emitDeclarationOnly": false,
+    "outDir": "./dist",
     "removeComments": false,
+    "sourceMap": true,
     "esModuleInterop": true,
     "forceConsistentCasingInFileNames": true,
-    "strict": false,
-    "skipLibCheck": true,
-    "sourceMap": true,
-    "emitDeclarationOnly": false 
+    "skipLibCheck": true
   },
   "include": [
     "index.ts",

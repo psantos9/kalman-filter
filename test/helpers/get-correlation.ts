@@ -2,8 +2,8 @@
 // Gaussian models
 
 export default function getCorrelation(covariance: number[][], i: number, j: number) {
-	const varI = covariance[i][i];
-	const varJ = covariance[j][j];
-	const covIj = covariance[i][j];
-	return covIj / (Math.sqrt(varI) * Math.sqrt(varJ));
+  const varI = covariance[i][i]
+  const varJ = covariance[j][j]
+  const covIj = covariance[i][j]
+  return covIj / (Math.sqrt(varI) * Math.sqrt(varJ))
 }

@@ -29,13 +29,12 @@ This library implements following features:
 
 ### Npm
 
-
 ```sh
 npm install kalman-filter
 ```
 
 ```js
-const {KalmanFilter} = require('kalman-filter');
+const { KalmanFilter } = require('kalman-filter')
 ```
 
 ### Browser usage
@@ -54,17 +53,16 @@ var {KalmanFilter} = kalmanFilter;
 </script>
 ```
 
-
 ## Simple Example
 
 ### 1D Smoothing Usage
 
 ```js
-const {KalmanFilter} = require('kalman-filter');
+const { KalmanFilter } = require('kalman-filter')
 
-const observations = [0, 0.1, 0.5, 0.2, 3, 4, 2, 1, 2, 3, 5, 6];
+const observations = [0, 0.1, 0.5, 0.2, 3, 4, 2, 1, 2, 3, 5, 6]
 // this is creating a smoothing
-const kFilter = new KalmanFilter();
+const kFilter = new KalmanFilter()
 const res = kFilter.filterAll(observations)
 // res is a list of list (for multidimensional filters)
 // [
@@ -89,10 +87,10 @@ Result is :
 ### 2D Smoothing Usage
 
 ```js
-const {KalmanFilter} = require('kalman-filter');
+const { KalmanFilter } = require('kalman-filter')
 
-const observations = [[0, 1], [0.1, 0.5], [0.2, 3], [4, 2], [1, 2]];
-const kFilter = new KalmanFilter({observation: 2});
+const observations = [[0, 1], [0.1, 0.5], [0.2, 3], [4, 2], [1, 2]]
+const kFilter = new KalmanFilter({ observation: 2 })
 // equivalent to
 // new KalmanFilter({
 // 	observation: {
@@ -106,13 +104,13 @@ const res = kFilter.filterAll(observations)
 ### 2D Smoothing with constant-speed model
 
 ```js
-const {KalmanFilter} = require('kalman-filter');
+const { KalmanFilter } = require('kalman-filter')
 
-const observations = [[0, 1], [0.1, 0.5], [0.2, 3], [4, 2], [1, 2]];
+const observations = [[0, 1], [0.1, 0.5], [0.2, 3], [4, 2], [1, 2]]
 const kFilter = new KalmanFilter({
-	observation: 2,
-	dynamic: 'constant-speed'
-});
+  observation: 2,
+  dynamic: 'constant-speed'
+})
 // equivalent to
 // new KalmanFilter({
 // 	observation: {
@@ -146,7 +144,6 @@ For advanced usage, here is the correspondance table with the matrix name of the
 
 ### Configure the dynamic with `dynamic.name`
 
-
 `dynamic.name` is a shortcut to give you access to preconfigured dynamic models, you can also register your own shortcust see [Register models shortcuts](#register-models-shortcuts)
 
 Available default models as :
@@ -160,8 +157,8 @@ This will automatically configure the `dynamic.transition` matrix.
 
 ```math
 \begin{align}
-State :& \begin{bmatrix} x_t \end{bmatrix}\\ 
-Transition Equation :& x_t \sim x_{t-1} \\ 
+State :& \begin{bmatrix} x_t \end{bmatrix}\\
+Transition Equation :& x_t \sim x_{t-1} \\
 dynamic.transition :& \begin{bmatrix} 1 \end{bmatrix}
 \end{align}
 ```
@@ -170,12 +167,12 @@ dynamic.transition :& \begin{bmatrix} 1 \end{bmatrix}
 
 ```math
 \begin{align}
-State :& \begin{bmatrix} x_t \\ speed_t \end{bmatrix} \\ 
-Transition Equation :& 
+State :& \begin{bmatrix} x_t \\ speed_t \end{bmatrix} \\
+Transition Equation :&
 \begin{split}
-x_t &\sim x_{t-1} + speed_{t-1},\\ 
+x_t &\sim x_{t-1} + speed_{t-1},\\
 speed_t &\sim speed_{t-1}
-\end{split} \\ 
+\end{split} \\
 dynamic.transition :& \begin{bmatrix} 1 & 1 \\ 0 & 1 \end{bmatrix}
 \end{align}
 ```
@@ -184,14 +181,14 @@ dynamic.transition :& \begin{bmatrix} 1 & 1 \\ 0 & 1 \end{bmatrix}
 
 ```math
 \begin{align}
-State :& \begin{bmatrix} x_t \\ speed_t \\ acc_t \end{bmatrix} \\ 
+State :& \begin{bmatrix} x_t \\ speed_t \\ acc_t \end{bmatrix} \\
 
-Transition Equation :& 
+Transition Equation :&
 \begin{split}
-x_t &\sim x_{t-1} + speed_{t-1} \\ 
-speed_t &\sim speed_{t-1} + acc_{t-1} \\ 
+x_t &\sim x_{t-1} + speed_{t-1} \\
+speed_t &\sim speed_{t-1} + acc_{t-1} \\
 acc_t &\sim acc_{t-1}
-\end{split} \\ 
+\end{split} \\
 dynamic.transition :& \begin{bmatrix} 1 & 1 & 0 \\ 0 & 1 & 1 \\ 0 & 0 & 1\end{bmatrix}
 \end{align}
 ```
@@ -201,59 +198,54 @@ dynamic.transition :& \begin{bmatrix} 1 & 1 & 0 \\ 0 & 1 & 1 \\ 0 & 0 & 1\end{bm
 This is the default behavior
 
 ```js
-const {KalmanFilter} = require('kalman-filter');
+const { KalmanFilter } = require('kalman-filter')
 
 const kFilter = new KalmanFilter({
-	observation: {
-		sensorDimension: 2,
-		name: 'sensor'
-	},
-	dynamic: {
-		name: 'constant-position',// observation.sensorDimension == dynamic.dimension
-		covariance: [3, 4]// equivalent to diag([3, 4])
-	}
-});
-
+  observation: {
+    sensorDimension: 2,
+    name: 'sensor'
+  },
+  dynamic: {
+    name: 'constant-position', // observation.sensorDimension == dynamic.dimension
+    covariance: [3, 4]// equivalent to diag([3, 4])
+  }
+})
 ```
 
 #### 'constant-speed' on 3D data
 
-
 ```js
-const {KalmanFilter} = require('kalman-filter');
+const { KalmanFilter } = require('kalman-filter')
 
 const kFilter = new KalmanFilter({
-	observation: {
-		sensorDimension: 3,
-		name: 'sensor'
-	},
-	dynamic: {
-		name: 'constant-speed',// observation.sensorDimension * 2 == state.dimension
-		timeStep: 0.1,
-		covariance: [3, 3, 3, 4, 4, 4]// equivalent to diag([3, 3, 3, 4, 4, 4])
-	}
-});
-
+  observation: {
+    sensorDimension: 3,
+    name: 'sensor'
+  },
+  dynamic: {
+    name: 'constant-speed', // observation.sensorDimension * 2 == state.dimension
+    timeStep: 0.1,
+    covariance: [3, 3, 3, 4, 4, 4]// equivalent to diag([3, 3, 3, 4, 4, 4])
+  }
+})
 ```
 
 #### 'constant-acceleration' on 2D data
 
-
 ```js
-const {KalmanFilter} = require('kalman-filter');
+const { KalmanFilter } = require('kalman-filter')
 
 const kFilter = new KalmanFilter({
-	observation: {
-		sensorDimension: 2,
-		name: 'sensor'
-	},
-	dynamic: {
-		name: 'constant-acceleration',// observation.sensorDimension * 3 == state.dimension
-		timeStep: 0.1,
-		covariance: [3, 3, 4, 4, 5, 5]// equivalent to diag([3, 3, 4, 4, 5, 5])
-	}
-});
-
+  observation: {
+    sensorDimension: 2,
+    name: 'sensor'
+  },
+  dynamic: {
+    name: 'constant-acceleration', // observation.sensorDimension * 3 == state.dimension
+    timeStep: 0.1,
+    covariance: [3, 3, 4, 4, 5, 5]// equivalent to diag([3, 3, 4, 4, 5, 5])
+  }
+})
 ```
 
 ### Instanciation of a generic linear model
@@ -266,49 +258,48 @@ This is an example of how to build a constant speed model, in 3D without `dynami
 * `dynamic.init` is used for initial state (we generally set a big covariance on it)
 
 ```js
-const {KalmanFilter} = require('kalman-filter');
+const { KalmanFilter } = require('kalman-filter')
 
-const timeStep = 0.1;
+const timeStep = 0.1
 
-const huge = 1e8;
+const huge = 1e8
 
 const kFilter = new KalmanFilter({
-	observation: {
-		dimension: 3
-	},
-	dynamic: {
-		init: {
-			// We just use random-guessed values here that seems reasonable
-			mean: [[500], [500], [500], [0], [0], [0]],
-			// We init the dynamic model with a huge covariance cause we don't
-			// have any idea where my modeled object before the first observation is located
-			covariance: [
-				[huge, 0, 0, 0, 0, 0],
-				[0, huge, 0, 0, 0, 0],
-				[0, 0, huge, 0, 0, 0],
-				[0, 0, 0, huge, 0, 0],
-				[0, 0, 0, 0, huge, 0],
-				[0, 0, 0, 0, 0, huge],
-			],
-		},
-		// Corresponds to (x, y, z, vx, vy, vz)
-		dimension: 6,
-		// This is a constant-speed model on 3D : [ [Id , timeStep*Id], [0, Id]]
-		transition: [
-			[1, 0, 0, timeStep, 0, 0],
-			[0, 1, 0, 0, timeStep, 0],
-			[0, 0, 1, 0, 0, timeStep],
-			[0, 0, 0, 1, 0, 0],
-			[0, 0, 0, 0, 1, 0],
-			[0, 0, 0, 0, 0, 1]
-		],
-		// Diagonal covariance for independant variables
-		// since timeStep = 0.1,
-		// it makes sense to consider speed variance to be ~ timeStep^2 * positionVariance
-		covariance: [1, 1, 1, 0.01, 0.01, 0.01]// equivalent to diag([1, 1, 1, 0.01, 0.01, 0.01])
-	}
-});
-
+  observation: {
+    dimension: 3
+  },
+  dynamic: {
+    init: {
+      // We just use random-guessed values here that seems reasonable
+      mean: [[500], [500], [500], [0], [0], [0]],
+      // We init the dynamic model with a huge covariance cause we don't
+      // have any idea where my modeled object before the first observation is located
+      covariance: [
+        [huge, 0, 0, 0, 0, 0],
+        [0, huge, 0, 0, 0, 0],
+        [0, 0, huge, 0, 0, 0],
+        [0, 0, 0, huge, 0, 0],
+        [0, 0, 0, 0, huge, 0],
+        [0, 0, 0, 0, 0, huge],
+      ],
+    },
+    // Corresponds to (x, y, z, vx, vy, vz)
+    dimension: 6,
+    // This is a constant-speed model on 3D : [ [Id , timeStep*Id], [0, Id]]
+    transition: [
+      [1, 0, 0, timeStep, 0, 0],
+      [0, 1, 0, 0, timeStep, 0],
+      [0, 0, 1, 0, 0, timeStep],
+      [0, 0, 0, 1, 0, 0],
+      [0, 0, 0, 0, 1, 0],
+      [0, 0, 0, 0, 0, 1]
+    ],
+    // Diagonal covariance for independant variables
+    // since timeStep = 0.1,
+    // it makes sense to consider speed variance to be ~ timeStep^2 * positionVariance
+    covariance: [1, 1, 1, 0.01, 0.01, 0.01]// equivalent to diag([1, 1, 1, 0.01, 0.01, 0.01])
+  }
+})
 ```
 
 ### Configure the observation
@@ -318,23 +309,22 @@ const kFilter = new KalmanFilter({
 The observation is made from 2 different sensors with identical properties (i.e. same covariances) , the input measure will be `[<sensor0-dim0>, <sensor0-dim1>, <sensor1-dim0>, <sensor1-dim1>]`.
 
 ```js
-const {KalmanFilter} = require('kalman-filter');
+const { KalmanFilter } = require('kalman-filter')
 
-const timeStep = 0.1;
+const timeStep = 0.1
 
 const kFilter = new KalmanFilter({
-	observation: {
-		sensorDimension: 2,// observation.dimension == observation.sensorDimension * observation.nSensors
-		nSensors: 2,
-		sensorCovariance: [3, 4], // equivalent to diag([3, 4])
-		name: 'sensor'
-	},
-	dynamic: {
-		name: 'constant-speed',// observation.sensorDimension * 2 == state.dimension
-		covariance: [3, 3, 4, 4]// equivalent to diag([3, 3, 4, 4])
-	}
-});
-
+  observation: {
+    sensorDimension: 2, // observation.dimension == observation.sensorDimension * observation.nSensors
+    nSensors: 2,
+    sensorCovariance: [3, 4], // equivalent to diag([3, 4])
+    name: 'sensor'
+  },
+  dynamic: {
+    name: 'constant-speed', // observation.sensorDimension * 2 == state.dimension
+    covariance: [3, 3, 4, 4]// equivalent to diag([3, 3, 4, 4])
+  }
+})
 ```
 
 #### Custom Observation matrix
@@ -347,26 +337,26 @@ This can be achived manually by using the detailed API :
 * `observation.covariance` is the covariance matrix of the *observation model*
 
 ```js
-const {KalmanFilter} = require('kalman-filter');
+const { KalmanFilter } = require('kalman-filter')
 
-const timeStep = 0.1;
+const timeStep = 0.1
 
 const kFilter = new KalmanFilter({
-	observation: {
-		dimension: 4,
-		stateProjection: [
-			[1, 0, 0, 0],
-			[0, 1, 0, 0],
-			[1, 0, 0, 0],
-			[0, 1, 0, 0]
-		],
-		covariance: [3, 4, 0.3, 0.4]
-	},
-	dynamic: {
-		name: 'constant-speed',// observation.sensorDimension * 2 == state.dimension
-		covariance: [3, 3, 4, 4]// equivalent to diag([3, 3, 4, 4])
-	}
-});
+  observation: {
+    dimension: 4,
+    stateProjection: [
+      [1, 0, 0, 0],
+      [0, 1, 0, 0],
+      [1, 0, 0, 0],
+      [0, 1, 0, 0]
+    ],
+    covariance: [3, 4, 0.3, 0.4]
+  },
+  dynamic: {
+    name: 'constant-speed', // observation.sensorDimension * 2 == state.dimension
+    covariance: [3, 3, 4, 4]// equivalent to diag([3, 3, 4, 4])
+  }
+})
 ```
 
 ## Play with Kalman Filter
@@ -383,74 +373,74 @@ In this situation this `function` will return the value of the matrix at each st
 In this example, we create a constant-speed filter with non-uniform intervals;
 
 ```js
-const {KalmanFilter} = require('kalman-filter');
+const { KalmanFilter } = require('kalman-filter')
 
-const intervals = [1,1,1,1,2,1,1,1];
+const intervals = [1, 1, 1, 1, 2, 1, 1, 1]
 
 const kFilter = new KalmanFilter({
-	observation: {
-		dimension: 2,
-		/**
-		* @param {State} opts.predicted
-		* @param {Array.<Number>} opts.observation
-		* @param {Number} opts.index
-		*/
-		stateProjection: function(opts){
-			return [
-				[1, 0, 0, 0],
-				[0, 1, 0, 0]
-			]
-		},
-		/**
-		* @param {State} opts.predicted
-		* @param {Array.<Number>} opts.observation
-		* @param {Number} opts.index
-		*/		
-		covariance: function(opts){
-			return [
-				[1, 0, 0, 0],
-				[0, 1, 0, 0],
-				[0, 0, 1, 0],
-				[0, 0, 0, 1]
-			]
-		}
-	},
-	dynamic: {
-		dimension: 4, //(x, y, vx, vy)
-		/**
-		* @param {State} opts.previousCorrected
-		* @param {Number} opts.index
-		*/
-		transition: function(opts){
-			const dT = intervals[opts.index];
-			if(typeof(dT) !== 'number' || isNaN(dT) || dT <= 0){
-				throw(new Error('dT should be positive number'))
-			}
-			return [
-				[1, 0, dT, 0],
-				[0, 1, 0, dT]
-				[0, 0, 1, 0]
-				[0, 0, 0, 1]
-			]
-		},
-		/**
-		* @param {State} opts.previousCorrected
-		* @param {Number} opts.index
-		*/		
-		covariance: function(opts){
-			const dT = intervals[opts.index];
-			if(typeof(dT) !== 'number' || isNaN(dT) || dT <= 0){
-				throw(new Error('dT should be positive number'))
-			}			
-			return [
-				[1, 0, 0, 0],
-				[0, 1, 0, 0],
-				[0, 0, 1*dT, 0],
-				[0, 0, 0, 1*dT]
-			]
-		}
-	}
-});
+  observation: {
+    dimension: 2,
+    /**
+     * @param {State} opts.predicted
+     * @param {Array.<number>} opts.observation
+     * @param {number} opts.index
+     */
+    stateProjection(opts) {
+      return [
+        [1, 0, 0, 0],
+        [0, 1, 0, 0]
+      ]
+    },
+    /**
+     * @param {State} opts.predicted
+     * @param {Array.<number>} opts.observation
+     * @param {number} opts.index
+     */
+    covariance(opts) {
+      return [
+        [1, 0, 0, 0],
+        [0, 1, 0, 0],
+        [0, 0, 1, 0],
+        [0, 0, 0, 1]
+      ]
+    }
+  },
+  dynamic: {
+    dimension: 4, // (x, y, vx, vy)
+    /**
+     * @param {State} opts.previousCorrected
+     * @param {number} opts.index
+     */
+    transition(opts) {
+      const dT = intervals[opts.index]
+      if (typeof (dT) !== 'number' || isNaN(dT) || dT <= 0) {
+        throw (new Error('dT should be positive number'))
+      }
+      return [
+        [1, 0, dT, 0],
+        [0, 1, 0, dT]
+          [0, 0, 1, 0]
+          [0, 0, 0, 1]
+      ]
+    },
+    /**
+     * @param {State} opts.previousCorrected
+     * @param {number} opts.index
+     */
+    covariance(opts) {
+      const dT = intervals[opts.index]
+      if (typeof (dT) !== 'number' || isNaN(dT) || dT <= 0) {
+        throw (new Error('dT should be positive number'))
+      }
+      return [
+        [1, 0, 0, 0],
+        [0, 1, 0, 0],
+        [0, 0, 1 * dT, 0],
+        [0, 0, 0, 1 * dT]
+      ]
+    }
+  }
+})
 ```
 ### Extended
 
@@ -469,16 +459,15 @@ If you want to add a constant parameter in the dynamic model (also called `contr
 
 See an example code in `demo/bouncing-ball` or the result in [Bouncing Ball example](https://observablehq.com/d/a033acc0859cc0de)
 
-
 ## Use your kalman filter
 
 ### Simple Batch usage (run it once for the whole dataset)
 
 ```js
-const observations = [[0, 2], [0.1, 4], [0.5, 9], [0.2, 12]];
+const observations = [[0, 2], [0.1, 4], [0.5, 9], [0.2, 12]]
 
 // batch kalman filter
-const results = kFilter.filterAll(observations);
+const results = kFilter.filterAll(observations)
 ```
 ### Online filter
 
@@ -486,12 +475,12 @@ When using online usage (only the forward step), the output of the `filter` meth
 
 ```js
 // online kalman filter
-let previousCorrected = null;
-const results = [];
-observations.forEach(observation => {
-	previousCorrected = kFilter.filter({previousCorrected, observation});
-	results.push(previousCorrected.mean);
-});
+let previousCorrected = null
+const results = []
+observations.forEach((observation) => {
+  previousCorrected = kFilter.filter({ previousCorrected, observation })
+  results.push(previousCorrected.mean)
+})
 ```
 
 ### Predict/Correct detailed usage (run it online)
@@ -500,25 +489,25 @@ If you want to use KalmanFilter in more advanced usage, you might want to dissoc
 
 ```js
 // online kalman filter
-let previousCorrected = null;
-const results = [];
-observations.forEach(observation => {
-	const predicted = kFilter.predict({
-		previousCorrected
-	});
+let previousCorrected = null
+const results = []
+observations.forEach((observation) => {
+  const predicted = kFilter.predict({
+    previousCorrected
+  })
 
-	 const correctedState = kFilter.correct({
-		predicted,
-		observation
-	});
+  const correctedState = kFilter.correct({
+    predicted,
+    observation
+  })
 
-	results.push(correctedState.mean);
+  results.push(correctedState.mean)
 
-	// update the previousCorrected for next loop iteration
-	previousCorrected = correctedState
-});
+  // update the previousCorrected for next loop iteration
+  previousCorrected = correctedState
+})
 
-console.log(results);
+console.log(results)
 ```
 
 ### Batch Forward - Backward smoothing usage
@@ -527,7 +516,7 @@ The Forward - Backward process
 
 ```js
 // batch kalman filter
-const results = kFilter.filterAll({observations, passMode: 'forward-backward'});
+const results = kFilter.filterAll({ observations, passMode: 'forward-backward' })
 ```
 
 ## Register models shortcuts
@@ -537,39 +526,38 @@ To get more information on how to build a dynamic model, check in the code `lib/
 If you feel your model can be used by other, do not hesitate to create a Pull Request.
 
 ```js
-const {registerDynamic, KalmanFilter, registerObservation} = require('kalman-filter');
+const { registerDynamic, KalmanFilter, registerObservation } = require('kalman-filter')
 
-registerObservation('custom-sensor', function(opts1){
-	// do your stuff
-	return {
-		dimension,
-		stateProjection,
-		covariance
-	}
+registerObservation('custom-sensor', (opts1) => {
+  // do your stuff
+  return {
+    dimension,
+    stateProjection,
+    covariance
+  }
 })
 
-registerDynamic('custom-dynamic', function(opts2, observation){
-	// do your stuff
-	// here you can use the parameter of observation (like observation.dimension)
-	// to build the parameters for dynamic
-	return {
-		dimension,
-		transition,
-		covariance
-	}
+registerDynamic('custom-dynamic', (opts2, observation) => {
+  // do your stuff
+  // here you can use the parameter of observation (like observation.dimension)
+  // to build the parameters for dynamic
+  return {
+    dimension,
+    transition,
+    covariance
+  }
 })
 
 const kFilter = new KalmanFilter({
-	observation: {
-		name: 'custom-sensor',
-		// ... fields of opts1
-	},
-	dynamic: {
-		name: 'custom-dynamic',
-		// ... fields of opts2
-	}
-});
-
+  observation: {
+    name: 'custom-sensor',
+    // ... fields of opts1
+  },
+  dynamic: {
+    name: 'custom-dynamic',
+    // ... fields of opts2
+  }
+})
 ```
 
 ## Set your model parameters from the ground truths state values
@@ -629,28 +617,28 @@ There are different ways to measure the performance of a model against some meas
 We use [Mahalanobis distance](https://en.wikipedia.org/wiki/Mahalanobis_distance)
 
 ```js
-const observations = [[0, 2], [0.1, 4], [0.5, 9], [0.2, 12]];
+const observations = [[0, 2], [0.1, 4], [0.5, 9], [0.2, 12]]
 
 // online kalman filter
-let previousCorrected = null;
-const results = [];
+let previousCorrected = null
+const results = []
 
-observations.forEach(observation => {
-	const predicted = kFilter.predict({
-		previousCorrected
-	});
+observations.forEach((observation) => {
+  const predicted = kFilter.predict({
+    previousCorrected
+  })
 
-	const dist = predicted.mahalanobis(observation)
+  const dist = predicted.mahalanobis(observation)
 
-	previousCorrected = kFilter.correct({
-		predicted,
-		observation
-	});
+  previousCorrected = kFilter.correct({
+    predicted,
+    observation
+  })
 
-	distances.push(dist);
-});
+  distances.push(dist)
+})
 
-const distance = distances.reduce((d1, d2) => d1 + d2, 0);
+const distance = distances.reduce((d1, d2) => d1 + d2, 0)
 ```
 ### How precise is this Model
 
@@ -658,31 +646,31 @@ We compare the model with random generated numbers sequence.
 
 ```js
 const h = require('hasard')
-const observationHasard = h.array({value: h.number({type: 'normal'}), size: 2})
 
-const observations = observationHasard.run(200);
+const observationHasard = h.array({ value: h.number({ type: 'normal' }), size: 2 })
+
+const observations = observationHasard.run(200)
 
 // online kalman filter
-let previousCorrected = null;
-const results = [];
+let previousCorrected = null
+const results = []
 
-observations.forEach(observation => {
-	const predicted = kFilter.predict({
-		previousCorrected
-	});
+observations.forEach((observation) => {
+  const predicted = kFilter.predict({
+    previousCorrected
+  })
 
-	const dist = predicted.mahalanobis(measure)
+  const dist = predicted.mahalanobis(measure)
 
-	previousCorrected = kFilter.correct({
-		predicted,
-		observation
-	});
+  previousCorrected = kFilter.correct({
+    predicted,
+    observation
+  })
 
-	distances.push(dist);
-});
+  distances.push(dist)
+})
 
-const distance = distances.reduce((d1, d2) => d1 + d2, 0);
-
+const distance = distances.reduce((d1, d2) => d1 + d2, 0)
 ```
 
 ### Credits
