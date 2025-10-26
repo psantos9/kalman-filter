@@ -1,9 +1,9 @@
 import test from 'ava'
 import { identity } from 'simple-linalg'
 
-import { KalmanFilter } from '../../../index'
-import * as modelCollection from '../../../lib/model-collection'
-import State from '../../../lib/state'
+import { KalmanFilter } from '../../../src/index'
+import * as modelCollection from '../../../src/lib/model-collection'
+import State from '../../../src/lib/state'
 import equalState from '../../helpers/equal-state'
 // Verify that we can use a registered model, the observations are here in 1D
 

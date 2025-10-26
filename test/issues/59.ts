@@ -1,5 +1,5 @@
 import test from 'ava'
-import { KalmanFilter } from '../../index'
+import { KalmanFilter } from '../../src/index'
 
 test('Sinusoide Extended Kalman-Filter', (t) => {
   const noiseLevel = 0.25

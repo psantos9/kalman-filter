@@ -1,5 +1,5 @@
 import test from 'ava'
-import { KalmanFilter } from '../../../index'
+import { KalmanFilter } from '../../../src/index'
 
 test('Logger.debug', (t) => {
   let hasDebug = false

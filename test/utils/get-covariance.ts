@@ -2,7 +2,7 @@ import test from 'ava'
 import cholesky from 'cholesky'
 import h from 'hasard'
 import { add, matMul } from 'simple-linalg'
-import getCovariance from '../../lib/utils/get-covariance'
+import getCovariance from '../../src/lib/utils/get-covariance'
 
 const buildDataFromCovariance = function (covariance) {
   const dimension = covariance.length

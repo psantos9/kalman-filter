@@ -1,6 +1,6 @@
 import test from 'ava'
 import { frobenius as distanceMat, sum } from 'simple-linalg'
-import { KalmanFilter } from '../../../index'
+import { KalmanFilter } from '../../../src/index'
 
 // Test 1 : Verify that a simple model converges quickly
 

@@ -1,8 +1,8 @@
-import type { CoreConfig } from '../../../lib/types/ObservationConfig'
+import type { CoreConfig } from '../../../src/lib/types/ObservationConfig'
 import test from 'ava'
 import { frobenius as distanceMat, sum, trace } from 'simple-linalg'
-import CoreKalmanFilter from '../../../lib/core-kalman-filter'
-import State from '../../../lib/state'
+import CoreKalmanFilter from '../../../src/lib/core-kalman-filter'
+import State from '../../../src/lib/state'
 import equalState from '../../helpers/equal-state'
 
 const defaultOptions: CoreConfig = {

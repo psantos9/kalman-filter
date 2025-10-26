@@ -1,6 +1,6 @@
 import test from 'ava'
 import { diag } from 'simple-linalg'
-import { KalmanFilter } from '../../index'
+import { KalmanFilter } from '../../src/index'
 
 test('#34 1-D', (t) => {
   const dataset = [0, 0, 0, 0, 16.1, 0, 0, 30.9, 0, 0, 0, 0, 26.1, null, null].map(a => [a])

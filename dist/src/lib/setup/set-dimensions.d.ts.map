@@ -1,0 +1,1 @@
+{"version":3,"file":"set-dimensions.d.ts","sourceRoot":"","sources":["../../../../src/lib/setup/set-dimensions.ts"],"names":[],"mappings":"AAAA,OAAO,KAAK,EAAE,oBAAoB,EAAE,yBAAyB,EAAE,MAAM,4BAA4B,CAAA;AAEjG;;;;;;;GAOG;AACH,MAAM,CAAC,OAAO,UAAU,aAAa,CAAC,IAAI,EAAE;IAAE,WAAW,MAAC;IAAC,OAAO,EAAE,yBAAyB,CAAA;CAAE,GAAG;IAAE,WAAW,EAAE,GAAG,CAAC;IAAC,OAAO,EAAE,oBAAoB,CAAA;CAAE,CAuCpJ"}

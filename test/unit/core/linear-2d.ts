@@ -1,7 +1,7 @@
 import test from 'ava'
 import { frobenius as distanceMat } from 'simple-linalg'
-import CoreKalmanFilter from '../../../lib/core-kalman-filter'
-import State from '../../../lib/state'
+import CoreKalmanFilter from '../../../src/lib/core-kalman-filter'
+import State from '../../../src/lib/state'
 
 // Tests in 2D with constant speed model
 

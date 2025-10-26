@@ -1,5 +1,5 @@
 import { frobenius as distanceMat } from 'simple-linalg'
-import State from '../../lib/state'
+import State from '../../src/lib/state'
 
 export default function equalState(state1, state2, tolerance = 1e-6) {
   if ((!(state1 instanceof State)) || (!(state2 instanceof State))) {

@@ -103,7 +103,6 @@ typings/
 .tern-port
 
 # dist is generated in the deployment process from src
-dist/
-cjs/
+#dist/
 
 .DS_Store

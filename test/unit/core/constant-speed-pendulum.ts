@@ -4,11 +4,11 @@
 
 // We have used a specific script to build the default parameters [script](../../../script/covariance-pendulum.js)
 
-import type { CoreConfig, PredictedCallback } from '../../../lib/types/ObservationConfig'
+import type { CoreConfig, PredictedCallback } from '../../../src/lib/types/ObservationConfig'
 import test from 'ava'
 import { frobenius as distanceMat } from 'simple-linalg'
-import CoreKalmanFilter from '../../../lib/core-kalman-filter'
-import State from '../../../lib/state'
+import CoreKalmanFilter from '../../../src/lib/core-kalman-filter'
+import State from '../../../src/lib/state'
 import getCorrelation from '../../helpers/get-correlation'
 
 // Tests in 2D with constant speed model

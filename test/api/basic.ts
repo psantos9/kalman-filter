@@ -1,8 +1,8 @@
 // ReadMe Tests
 
 import test from 'ava'
-import { KalmanFilter } from '../../index'
-import State from '../../lib/state'
+import { KalmanFilter } from '../../src/index'
+import State from '../../src/lib/state'
 // Const getCovariance = require('../../lib/utils/get-covariance.js');
 const observations = [[0, 2], [0.1, 4], [0.5, 9], [0.2, 12]]
 

@@ -1,6 +1,6 @@
 import test from 'ava'
-import { KalmanFilter } from '../../../index'
-import State from '../../../lib/state'
+import { KalmanFilter } from '../../../src/index'
+import State from '../../../src/lib/state'
 import equalState from '../../../test/helpers/equal-state'
 
 const huge = 1e6
