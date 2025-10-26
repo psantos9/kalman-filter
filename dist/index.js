@@ -1,57 +1,8 @@
-var __create = Object.create;
 var __defProp = Object.defineProperty;
-var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
-var __getOwnPropNames = Object.getOwnPropertyNames;
-var __getProtoOf = Object.getPrototypeOf;
-var __hasOwnProp = Object.prototype.hasOwnProperty;
 var __export = (target, all) => {
   for (var name in all)
     __defProp(target, name, { get: all[name], enumerable: true });
 };
-var __copyProps = (to, from, except, desc) => {
-  if (from && typeof from === "object" || typeof from === "function") {
-    for (let key of __getOwnPropNames(from))
-      if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
-  }
-  return to;
-};
-var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__getProtoOf(mod)) : {}, __copyProps(
-  // If the importer is in node compatibility mode or this is not an ESM
-  // file that has been converted to a CommonJS file using a Babel-
-  // compatible transform (i.e. "__esModule" has not been set), then set
-  // "default" to the CommonJS "module.exports" for node compatibility.
-  isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
-  mod
-));
-var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
-
-// src/index.ts
-var index_exports = {};
-__export(index_exports, {
-  KalmanFilter: () => KalmanFilter,
-  State: () => State,
-  buildDynamic: () => buildDynamic,
-  buildObservation: () => buildObservation,
-  checkCovariance: () => checkCovariance,
-  composition: () => composition,
-  constantAcceleration: () => constantAcceleration,
-  constantPosition: () => constantPosition,
-  constantPositionWithNull: () => constantPositionWithNull,
-  constantSpeed: () => constantSpeed,
-  constantSpeedDynamic: () => constantSpeedDynamic,
-  correlationToCovariance: () => correlationToCovariance,
-  covarianceToCorrelation: () => covarianceToCorrelation,
-  getCovariance: () => getCovariance,
-  projectObservation: () => projectObservation,
-  registerDynamic: () => registerDynamic,
-  registerObservation: () => registerObservation,
-  sensor: () => sensor,
-  sensorLocalVariance: () => nullableSensor,
-  sensorProjected: () => sensorProjected,
-  shorttermConstantSpeed: () => shorttermConstantSpeed
-});
-module.exports = __toCommonJS(index_exports);
 
 // src/lib/dynamic/index.ts
 var dynamic_exports = {};
@@ -199,7 +150,7 @@ function composition({ perName }, observation) {
 }
 
 // src/lib/dynamic/constant-acceleration.ts
-var import_simple_linalg = require("simple-linalg");
+import { identity } from "simple-linalg";
 function constantAcceleration(dynamic, observation) {
   const timeStep = dynamic.timeStep || 1;
   const { observedProjection } = observation;
@@ -216,7 +167,7 @@ function constantAcceleration(dynamic, observation) {
     throw new Error("observedProjection or stateProjection should be defined in observation in order to use constant-speed filter");
   }
   const baseDimension = dimension / 3;
-  const transition = (0, import_simple_linalg.identity)(dimension);
+  const transition = identity(dimension);
   for (let i = 0; i < baseDimension; i++) {
     transition[i][i + baseDimension] = timeStep;
     transition[i][i + 2 * baseDimension] = 0.5 * timeStep ** 2;
@@ -233,7 +184,7 @@ function constantAcceleration(dynamic, observation) {
 }
 
 // src/lib/dynamic/constant-position.ts
-var import_simple_linalg2 = require("simple-linalg");
+import { identity as identity2 } from "simple-linalg";
 function constantPosition(dynamic, observation) {
   let { dimension } = dynamic;
   const observationDimension = observation.dimension;
@@ -249,8 +200,8 @@ function constantPosition(dynamic, observation) {
       dimension = stateProjection[0].length;
     }
   }
-  const transition = (0, import_simple_linalg2.identity)(dimension);
-  covariance ||= (0, import_simple_linalg2.identity)(dimension);
+  const transition = identity2(dimension);
+  covariance ||= identity2(dimension);
   return {
     ...dynamic,
     dimension,
@@ -260,13 +211,13 @@ function constantPosition(dynamic, observation) {
 }
 
 // src/lib/dynamic/constant-position-with-null.ts
-var import_simple_linalg3 = require("simple-linalg");
+import { diag, identity as identity3 } from "simple-linalg";
 var huge = 1e6;
 function constantPositionWithNull({ staticCovariance, obsDynaIndexes, init }) {
   const dimension = obsDynaIndexes.length;
   init ||= {
     mean: Array.from({ length: obsDynaIndexes.length }).fill(0).map(() => [0]),
-    covariance: (0, import_simple_linalg3.diag)(Array.from({ length: obsDynaIndexes.length }).map(() => huge)),
+    covariance: diag(Array.from({ length: obsDynaIndexes.length }).map(() => huge)),
     index: -1
   };
   if (staticCovariance && staticCovariance.length !== dimension) {
@@ -275,21 +226,21 @@ function constantPositionWithNull({ staticCovariance, obsDynaIndexes, init }) {
   return {
     dimension,
     transition() {
-      return (0, import_simple_linalg3.identity)(dimension);
+      return identity3(dimension);
     },
     covariance({ previousCorrected, index }) {
       const diffBetweenIndexes = index - previousCorrected.index;
       if (staticCovariance) {
         return staticCovariance.map((row) => row.map((element) => element * diffBetweenIndexes));
       }
-      return (0, import_simple_linalg3.identity)(dimension);
+      return identity3(dimension);
     },
     init
   };
 }
 
 // src/lib/dynamic/constant-speed.ts
-var import_simple_linalg4 = require("simple-linalg");
+import { identity as identity4 } from "simple-linalg";
 function constantSpeed(dynamic, observation) {
   const timeStep = dynamic.timeStep || 1;
   const { observedProjection } = observation;
@@ -306,7 +257,7 @@ function constantSpeed(dynamic, observation) {
     throw new Error("observedProjection or stateProjection should be defined in observation in order to use constant-speed filter");
   }
   const baseDimension = dimension / 2;
-  const transition = (0, import_simple_linalg4.identity)(dimension);
+  const transition = identity4(dimension);
   for (let i = 0; i < baseDimension; i++) {
     transition[i][i + baseDimension] = timeStep;
   }
@@ -321,7 +272,7 @@ function constantSpeed(dynamic, observation) {
 }
 
 // src/lib/dynamic/constant-speed-dynamic.ts
-var import_simple_linalg5 = require("simple-linalg");
+import { diag as diag2 } from "simple-linalg";
 function constantSpeedDynamic(args, observation) {
   const { staticCovariance, avSpeed, center } = args;
   const observationDimension = observation.observedProjection[0].length;
@@ -335,7 +286,7 @@ function constantSpeedDynamic(args, observation) {
   if (avSpeed.length !== observationDimension) {
     throw new TypeError(`avSpeed size should be ${observationDimension}`);
   }
-  const initCov = (0, import_simple_linalg5.diag)(center.map((c) => c * c / 3).concat(avSpeed.map((c) => c * c / 3)));
+  const initCov = diag2(center.map((c) => c * c / 3).concat(avSpeed.map((c) => c * c / 3)));
   const init = {
     mean: center.map((c) => [c]).concat(center.map(() => [0])),
     covariance: initCov,
@@ -347,7 +298,7 @@ function constantSpeedDynamic(args, observation) {
     if (typeof dT !== "number" || Number.isNaN(dT)) {
       throw new TypeError(`dT (${dT}) should be a number`);
     }
-    const mat = (0, import_simple_linalg5.diag)(center.map(() => 1).concat(center.map(() => 1)));
+    const mat = diag2(center.map(() => 1).concat(center.map(() => 1)));
     for (let i = 0; i < observationDimension; i++) {
       mat[i][observationDimension + i] = dT;
     }
@@ -368,7 +319,7 @@ function constantSpeedDynamic(args, observation) {
       console.log(dT, previousCorrected.index, index, getTime(index), getTime(previousCorrected.index));
       throw new Error("Sqrt(dT) is NaN");
     }
-    return (0, import_simple_linalg5.diag)(staticCovariance.map((v) => v * sqrt));
+    return diag2(staticCovariance.map((v) => v * sqrt));
   };
   return {
     init,
@@ -379,7 +330,7 @@ function constantSpeedDynamic(args, observation) {
 }
 
 // src/lib/dynamic/shortterm-constant-speed.ts
-var import_simple_linalg6 = require("simple-linalg");
+import { diag as diag3, elemWise } from "simple-linalg";
 var safeDiv = function(a, b) {
   if (a === 0) {
     return 0;
@@ -404,7 +355,7 @@ function shorttermConstantSpeed(options, observation) {
     aMat,
     bMat
   }) {
-    return (0, import_simple_linalg6.elemWise)([aMat, bMat], ([m, d], rowIndex, colIndex) => {
+    return elemWise([aMat, bMat], ([m, d], rowIndex, colIndex) => {
       const ratio = rowIndex === colIndex ? ratios[rowIndex] : (ratios[rowIndex] + ratios[colIndex]) / 2;
       return ratio * m + (1 - ratio) * d;
     });
@@ -417,8 +368,8 @@ function shorttermConstantSpeed(options, observation) {
       const { getTime, index, previousCorrected } = options2;
       const dT = getTime(index) - getTime(previousCorrected.index);
       const ratios = typicalTimes.map((t) => Math.exp(-1 * dT / t));
-      const bMat = (0, import_simple_linalg6.diag)(
-        (0, import_simple_linalg6.elemWise)([init.mean, previousCorrected.mean], ([m, d]) => safeDiv(m, d)).reduce((a, b) => a.concat(b))
+      const bMat = diag3(
+        elemWise([init.mean, previousCorrected.mean], ([m, d]) => safeDiv(m, d)).reduce((a, b) => a.concat(b))
       );
       return mixMatrix({ ratios, aMat, bMat });
     },
@@ -444,7 +395,7 @@ __export(observation_exports, {
 });
 
 // src/lib/observation/sensor.ts
-var import_simple_linalg8 = require("simple-linalg");
+import { identity as identity5 } from "simple-linalg";
 
 // src/lib/types/TypeAssert.ts
 function debugValue(value) {
@@ -572,12 +523,12 @@ ${matrix.join("\n")}`
 }
 
 // src/lib/utils/polymorph-matrix.ts
-var import_simple_linalg7 = require("simple-linalg");
+import { diag as diag4 } from "simple-linalg";
 function polymorphMatrix(cov, opts = {}) {
   const { dimension, title = "polymorph" } = opts;
   if (typeof cov === "number" || Array.isArray(cov)) {
     if (typeof cov === "number" && typeof dimension === "number") {
-      return (0, import_simple_linalg7.diag)(new Array(dimension).fill(cov));
+      return diag4(new Array(dimension).fill(cov));
     }
     if (TypeAssert_default.isArray2D(cov)) {
       let shape;
@@ -588,7 +539,7 @@ function polymorphMatrix(cov, opts = {}) {
       return cov;
     }
     if (TypeAssert_default.isArray1D(cov)) {
-      return (0, import_simple_linalg7.diag)(cov);
+      return diag4(cov);
     }
   }
   return cov;
@@ -603,10 +554,10 @@ function sensor(options) {
     throw new TypeError("sensorCovarianceFormatted can not be a function here");
   }
   checkMatrix(sensorCovarianceFormatted, [sensorDimension, sensorDimension], "observation.sensorCovariance");
-  const oneSensorObservedProjection = (0, import_simple_linalg8.identity)(sensorDimension);
+  const oneSensorObservedProjection = identity5(sensorDimension);
   let concatenatedObservedProjection = [];
   const dimension = sensorDimension * nSensors;
-  const concatenatedCovariance = (0, import_simple_linalg8.identity)(dimension);
+  const concatenatedCovariance = identity5(dimension);
   for (let i = 0; i < nSensors; i++) {
     concatenatedObservedProjection = concatenatedObservedProjection.concat(copy(oneSensorObservedProjection));
     for (const [rIndex, r] of sensorCovarianceFormatted.entries()) {
@@ -624,14 +575,14 @@ function sensor(options) {
 }
 
 // src/lib/observation/sensor-local-variance.ts
-var import_simple_linalg9 = require("simple-linalg");
+import { identity as identity6 } from "simple-linalg";
 function nullableSensor(options) {
   const { dimension, observedProjection, covariance: baseCovariance } = buildObservation({ ...options, name: "sensor" });
   return {
     dimension,
     observedProjection,
     covariance(o) {
-      const covariance = (0, import_simple_linalg9.identity)(dimension);
+      const covariance = identity6(dimension);
       const { variance } = o;
       variance.forEach((v, i) => {
         covariance[i][i] = v * baseCovariance[i][i];
@@ -642,13 +593,13 @@ function nullableSensor(options) {
 }
 
 // src/lib/observation/sensor-projected.ts
-var import_simple_linalg10 = require("simple-linalg");
+import { identity as identity7, matPermutation } from "simple-linalg";
 
 // src/lib/utils/check-covariance.ts
-var import_matrix = __toESM(require("@rayyamhk/matrix"), 1);
+import Matrix from "@rayyamhk/matrix";
 var tolerance = 0.1;
 var checkDefinitePositive = function(covariance, tolerance2 = 1e-10) {
-  const covarianceMatrix = new import_matrix.default(covariance);
+  const covarianceMatrix = new Matrix(covariance);
   const eigenvalues = covarianceMatrix.eigenvalues();
   for (const eigenvalue of eigenvalues) {
     if (eigenvalue <= -tolerance2) {
@@ -710,7 +661,7 @@ function sensorProjected({ selectedCovariance, totalDimension, obsIndexes, selec
   } else if (selectedStateProjection.length !== obsIndexes.length) {
     throw new Error(`[Sensor-projected] Shape mismatch between ${selectedStateProjection.length} and ${obsIndexes.length}`);
   }
-  const baseCovariance = (0, import_simple_linalg10.identity)(totalDimension);
+  const baseCovariance = identity7(totalDimension);
   obsIndexes.forEach((index1, i1) => {
     if (selectedCovariance) {
       obsIndexes.forEach((index2, i2) => {
@@ -723,7 +674,7 @@ function sensorProjected({ selectedCovariance, totalDimension, obsIndexes, selec
   if (selectedStateProjection.length !== obsIndexes.length) {
     throw new Error(`shape mismatch (${selectedStateProjection.length} vs ${obsIndexes.length})`);
   }
-  const observedProjection = (0, import_simple_linalg10.matPermutation)({
+  const observedProjection = matPermutation({
     outputSize: [totalDimension, dynaDimension],
     colIndexes: selectedStateProjection[0].map((_, i) => i),
     rowIndexes: obsIndexes,
@@ -747,10 +698,10 @@ function sensorProjected({ selectedCovariance, totalDimension, obsIndexes, selec
 }
 
 // src/lib/kalman-filter.ts
-var import_simple_linalg15 = require("simple-linalg");
+import { frobenius as distanceMat } from "simple-linalg";
 
 // src/lib/setup/build-state-projection.ts
-var import_simple_linalg11 = require("simple-linalg");
+import { identity as identity8, padWithZeroCols as padWithZeros } from "simple-linalg";
 function buildStateProjection(args) {
   const { observation, dynamic } = args;
   const { observedProjection, stateProjection } = observation;
@@ -760,7 +711,7 @@ function buildStateProjection(args) {
     throw new TypeError("You cannot use both observedProjection and stateProjection");
   }
   if (observedProjection) {
-    const stateProjection2 = (0, import_simple_linalg11.padWithZeroCols)(observedProjection, { columns: dynamicDimension });
+    const stateProjection2 = padWithZeros(observedProjection, { columns: dynamicDimension });
     return {
       observation: {
         ...observation,
@@ -770,11 +721,11 @@ function buildStateProjection(args) {
     };
   }
   if (observationDimension && dynamicDimension && !stateProjection) {
-    const observationMatrix = (0, import_simple_linalg11.identity)(observationDimension);
+    const observationMatrix = identity8(observationDimension);
     return {
       observation: {
         ...observation,
-        stateProjection: (0, import_simple_linalg11.padWithZeroCols)(observationMatrix, { columns: dynamicDimension })
+        stateProjection: padWithZeros(observationMatrix, { columns: dynamicDimension })
       },
       dynamic
     };
@@ -794,7 +745,7 @@ function checkDimensions(args) {
 }
 
 // src/lib/setup/extend-dynamic-init.ts
-var import_simple_linalg12 = require("simple-linalg");
+import { diag as diag5 } from "simple-linalg";
 function extendDynamicInit(args) {
   const { observation, dynamic } = args;
   if (!dynamic.init) {
@@ -808,7 +759,7 @@ function extendDynamicInit(args) {
         ...dynamic,
         init: {
           mean: meanArray.map((element) => [element]),
-          covariance: (0, import_simple_linalg12.diag)(covarianceArray),
+          covariance: diag5(covarianceArray),
           index: -1
         }
       }
@@ -937,10 +888,24 @@ function toFunction(array, { label = "" } = {}) {
 }
 
 // src/lib/core-kalman-filter.ts
-var import_simple_linalg14 = require("simple-linalg");
+import {
+  add,
+  identity as getIdentity,
+  invert as invert2,
+  matMul as matMul2,
+  subtract as sub,
+  transpose as transpose2
+} from "simple-linalg";
 
 // src/lib/state.ts
-var import_simple_linalg13 = require("simple-linalg");
+import {
+  elemWise as elemWise2,
+  invert,
+  matMul,
+  subSquareMatrix,
+  subtract,
+  transpose
+} from "simple-linalg";
 var State = class _State {
   mean;
   covariance;
@@ -991,11 +956,11 @@ var State = class _State {
    */
   static matMul(args) {
     const { state, matrix } = args;
-    const covariance = (0, import_simple_linalg13.matMul)(
-      (0, import_simple_linalg13.matMul)(matrix, state.covariance),
-      (0, import_simple_linalg13.transpose)(matrix)
+    const covariance = matMul(
+      matMul(matrix, state.covariance),
+      transpose(matrix)
     );
-    const mean = (0, import_simple_linalg13.matMul)(matrix, state.mean);
+    const mean = matMul(matrix, state.mean);
     return new _State({
       mean,
       covariance,
@@ -1012,7 +977,7 @@ var State = class _State {
   subState(obsIndexes) {
     const state = new _State({
       mean: obsIndexes.map((i) => this.mean[i]),
-      covariance: (0, import_simple_linalg13.subSquareMatrix)(this.covariance, obsIndexes),
+      covariance: subSquareMatrix(this.covariance, obsIndexes),
       index: this.index
     });
     return state;
@@ -1029,22 +994,22 @@ var State = class _State {
    * @returns {DetailedMahalanobis}
    */
   rawDetailedMahalanobis(point) {
-    const diff = (0, import_simple_linalg13.subtract)(this.mean, point);
+    const diff = subtract(this.mean, point);
     this.check();
-    const covarianceInvert = (0, import_simple_linalg13.invert)(this.covariance);
+    const covarianceInvert = invert(this.covariance);
     if (covarianceInvert === null) {
       this.check({ eigen: true });
       throw new Error(`Cannot invert covariance ${JSON.stringify(this.covariance)}`);
     }
-    const diffTransposed = (0, import_simple_linalg13.transpose)(diff);
-    const valueMatrix = (0, import_simple_linalg13.matMul)(
-      (0, import_simple_linalg13.matMul)(diffTransposed, covarianceInvert),
+    const diffTransposed = transpose(diff);
+    const valueMatrix = matMul(
+      matMul(diffTransposed, covarianceInvert),
       diff
     );
     const value = Math.sqrt(valueMatrix[0][0]);
     if (Number.isNaN(value)) {
-      const debugValue2 = (0, import_simple_linalg13.matMul)(
-        (0, import_simple_linalg13.matMul)(
+      const debugValue2 = matMul(
+        matMul(
           diffTransposed,
           covarianceInvert
         ),
@@ -1124,16 +1089,16 @@ var State = class _State {
    */
   bhattacharyya(otherState) {
     const { covariance, mean } = this;
-    const average = (0, import_simple_linalg13.elemWise)([covariance, otherState.covariance], ([a, b]) => (a + b) / 2);
+    const average = elemWise2([covariance, otherState.covariance], ([a, b]) => (a + b) / 2);
     let covarInverted;
     try {
-      covarInverted = (0, import_simple_linalg13.invert)(average);
+      covarInverted = invert(average);
     } catch (error) {
       console.log("Cannot invert", average);
       throw error;
     }
-    const diff = (0, import_simple_linalg13.subtract)(mean, otherState.mean);
-    return (0, import_simple_linalg13.matMul)((0, import_simple_linalg13.transpose)(diff), (0, import_simple_linalg13.matMul)(covarInverted, diff))[0][0];
+    const diff = subtract(mean, otherState.mean);
+    return matMul(transpose(diff), matMul(covarInverted, diff))[0][0];
   }
 };
 
@@ -1180,11 +1145,11 @@ var CoreKalmanFilter = class {
     const getValueOptions = { previousCorrected, index, ...options };
     const transition = this.getValue(this.dynamic.transition, getValueOptions);
     checkMatrix(transition, [this.dynamic.dimension, this.dynamic.dimension], "dynamic.transition");
-    const transitionTransposed = (0, import_simple_linalg14.transpose)(transition);
-    const covarianceInter = (0, import_simple_linalg14.matMul)(transition, previousCorrected.covariance);
-    const covariancePrevious = (0, import_simple_linalg14.matMul)(covarianceInter, transitionTransposed);
+    const transitionTransposed = transpose2(transition);
+    const covarianceInter = matMul2(transition, previousCorrected.covariance);
+    const covariancePrevious = matMul2(covarianceInter, transitionTransposed);
     const dynCov = this.getValue(this.dynamic.covariance, getValueOptions);
-    const covariance = (0, import_simple_linalg14.add)(
+    const covariance = add(
       dynCov,
       covariancePrevious
     );
@@ -1199,7 +1164,7 @@ var CoreKalmanFilter = class {
     const { opts } = o;
     const control = this.dynamic.constant(opts);
     checkMatrix(control, [this.dynamic.dimension, 1], "dynamic.constant");
-    return (0, import_simple_linalg14.add)(mean, control);
+    return add(mean, control);
   }
   predictMeanWithoutControl(args) {
     const { opts, transition } = args;
@@ -1207,7 +1172,7 @@ var CoreKalmanFilter = class {
       return this.dynamic.fn(opts);
     }
     const { previousCorrected } = opts;
-    return (0, import_simple_linalg14.matMul)(transition, previousCorrected.mean);
+    return matMul2(transition, previousCorrected.mean);
   }
   /**
   This will return the new prediction, relatively to the dynamic model chosen
@@ -1253,16 +1218,16 @@ var CoreKalmanFilter = class {
     stateProjection ||= this.getValue(this.observation.stateProjection, getValueOptions);
     const obsCovariance = this.getValue(this.observation.covariance, getValueOptions);
     checkMatrix(obsCovariance, [this.observation.dimension, this.observation.dimension], "observation.covariance");
-    const stateProjTransposed = (0, import_simple_linalg14.transpose)(stateProjection);
+    const stateProjTransposed = transpose2(stateProjection);
     checkMatrix(stateProjection, [this.observation.dimension, this.dynamic.dimension], "observation.stateProjection");
-    const noiselessInnovation = (0, import_simple_linalg14.matMul)(
-      (0, import_simple_linalg14.matMul)(stateProjection, predicted.covariance),
+    const noiselessInnovation = matMul2(
+      matMul2(stateProjection, predicted.covariance),
       stateProjTransposed
     );
-    const innovationCovariance = (0, import_simple_linalg14.add)(noiselessInnovation, obsCovariance);
-    const optimalKalmanGain = (0, import_simple_linalg14.matMul)(
-      (0, import_simple_linalg14.matMul)(predicted.covariance, stateProjTransposed),
-      (0, import_simple_linalg14.invert)(innovationCovariance)
+    const innovationCovariance = add(noiselessInnovation, obsCovariance);
+    const optimalKalmanGain = matMul2(
+      matMul2(predicted.covariance, stateProjTransposed),
+      invert2(innovationCovariance)
     );
     return optimalKalmanGain;
   }
@@ -1273,7 +1238,7 @@ var CoreKalmanFilter = class {
    */
   getCorrectedCovariance(options) {
     let { predicted, optimalKalmanGain, stateProjection } = options;
-    const identity9 = (0, import_simple_linalg14.identity)(predicted.covariance.length);
+    const identity9 = getIdentity(predicted.covariance.length);
     if (!stateProjection) {
       TypeAssert_default.assertIsArray2D(this.observation.stateProjection, "CoreKalmanFilter.getCorrectedCovariance");
       const getValueOptions = {
@@ -1283,8 +1248,8 @@ var CoreKalmanFilter = class {
       stateProjection = this.getValue(this.observation.stateProjection, getValueOptions);
     }
     optimalKalmanGain ||= this.getGain({ stateProjection, ...options });
-    return (0, import_simple_linalg14.matMul)(
-      (0, import_simple_linalg14.subtract)(identity9, (0, import_simple_linalg14.matMul)(optimalKalmanGain, stateProjection)),
+    return matMul2(
+      sub(identity9, matMul2(optimalKalmanGain, stateProjection)),
       predicted.covariance
     );
   }
@@ -1294,7 +1259,7 @@ var CoreKalmanFilter = class {
       return this.observation.fn(opts);
     }
     const { predicted } = opts;
-    return (0, import_simple_linalg14.matMul)(stateProjection, predicted.mean);
+    return matMul2(stateProjection, predicted.mean);
   }
   /**
   This will return the new correction, taking into account the prediction made
@@ -1322,13 +1287,13 @@ var CoreKalmanFilter = class {
       stateProjection,
       ...options
     });
-    const innovation = (0, import_simple_linalg14.subtract)(
+    const innovation = sub(
       observation,
       this.getPredictedObservation({ stateProjection, opts: getValueOptions })
     );
-    const mean = (0, import_simple_linalg14.add)(
+    const mean = add(
       predicted.mean,
-      (0, import_simple_linalg14.matMul)(optimalKalmanGain, innovation)
+      matMul2(optimalKalmanGain, innovation)
     );
     if (Number.isNaN(mean[0][0])) {
       console.log({ optimalKalmanGain, innovation, predicted });
@@ -1474,7 +1439,7 @@ var KalmanFilter = class extends CoreKalmanFilter {
         covariance: super.getCorrectedCovariance({ predicted })
       });
       results.push(previousCorrected.covariance);
-      if ((0, import_simple_linalg15.frobenius)(previousCorrected.covariance, results[i - 1]) < tolerance2) {
+      if (distanceMat(previousCorrected.covariance, results[i - 1]) < tolerance2) {
         return results[i];
       }
     }
@@ -1514,7 +1479,7 @@ function getCovariance({ measures, averages }) {
 }
 
 // src/lib/utils/project-observation.ts
-var import_simple_linalg16 = require("simple-linalg");
+import { invert as invert3, matMul as matMul3 } from "simple-linalg";
 function projectObservation({ observation, obsIndexes, selectedStateProjection, invertSelectedStateProjection }) {
   if (!observation) {
     return null;
@@ -1526,11 +1491,11 @@ function projectObservation({ observation, obsIndexes, selectedStateProjection, 
     }
     return [value[i]];
   });
-  const inverse = invertSelectedStateProjection || (0, import_simple_linalg16.invert)(selectedStateProjection);
+  const inverse = invertSelectedStateProjection || invert3(selectedStateProjection);
   if (inverse === null) {
     throw new Error("selectedStateProjection is not invertible, please provide invertSelectedStateProjection");
   }
-  const out = (0, import_simple_linalg16.matMul)(inverse, vec);
+  const out = matMul3(inverse, vec);
   return out.map((v) => v[0]).map((v) => {
     if (Number.isNaN(v)) {
       throw new TypeError("NaN in projection");
@@ -1552,8 +1517,7 @@ Object.keys(dynamic_exports).forEach((k) => {
 Object.keys(observation_exports).forEach((k) => {
   registerObservation(camelToDash(k), observation_exports[k]);
 });
-// Annotate the CommonJS export names for ESM import in node:
-0 && (module.exports = {
+export {
   KalmanFilter,
   State,
   buildDynamic,
@@ -1572,8 +1536,7 @@ Object.keys(observation_exports).forEach((k) => {
   registerDynamic,
   registerObservation,
   sensor,
-  sensorLocalVariance,
+  nullableSensor as sensorLocalVariance,
   sensorProjected,
   shorttermConstantSpeed
-});
-module.exports = module.exports.default;
+};
